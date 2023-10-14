@@ -13,12 +13,14 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class Punch_force_1 extends LinearOpMode {
 
     Servo servo;
+    Arm arm;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        arm = new Arm(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        servo = hardwareMap.get(Servo.class, "Grabber");
+//        servo = hardwareMap.get(Servo.class, "Grabber");
 
         waitForStart();
 
@@ -39,6 +41,20 @@ public class Punch_force_1 extends LinearOpMode {
             if (gamepad2.b) {
                 servo.setPosition(50);
             }
+
+            if (gamepad1.x) {
+                arm.powerElbow(0.3);
+            } else {
+                arm.powerElbow(0);
+            }
+
+
+            if (gamepad1.y) {
+                arm.powerShoulder(0.7);
+            } else {
+                arm.powerShoulder(0);
+            }
+
 
             Pose2d poseEstimate = drive.getPoseEstimate();
             telemetry.addData("x", poseEstimate.getX());
