@@ -43,17 +43,13 @@ public class Punch_force_1 extends LinearOpMode {
             }
 
             if (gamepad1.x) {
-                arm.powerElbow(0.3);
-            } else {
-                arm.powerElbow(0);
+                arm.moveShoulderToAngle(45);
             }
-
-
             if (gamepad1.y) {
-                arm.powerShoulder(0.7);
-            } else {
-                arm.powerShoulder(0);
+                arm.moveShoulderToAngle(0);
             }
+
+
 
 
             Pose2d poseEstimate = drive.getPoseEstimate();

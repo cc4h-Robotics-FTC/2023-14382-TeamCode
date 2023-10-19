@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.acos;
 import static java.lang.Math.atan;
-import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
-import static java.lang.Math.sqrt;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,13 +14,30 @@ public class Arm {
     private DcMotor elbow;
     private double lowerLength = 15.125;
     private double upperLength = 16;
-
+    private int shoulder_pos;
+    private int elbow_pos;
+    private int shoulder_angle = 0;
+    private int elbow_angle = 0;
     public Arm(HardwareMap map) {
         shoulder = map.get(DcMotor.class, "shoulder");
-       elbow = map.get(DcMotor.class, "elbow");
-       shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elbow = map.get(DcMotor.class, "elbow");
+
+        elbow_pos = elbow.getCurrentPosition();
+
+        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulder_pos = shoulder.getCurrentPosition();
+
+        shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shoulder.setTargetPosition(0);
+        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulder.setPower(1);
+
+
     }
+
+
 
     public void setPosition(double x, double z) {
         // *** Inverse Kinematics ***
@@ -89,4 +104,16 @@ public class Arm {
         return i * i;
     }
 
+    public void moveShoulderToAngle(int degrees){
+        int angle_diff = degrees - shoulder_angle;
+        int diff_ticks = getAngleToTicks(angle_diff);
+        int target_ticks = shoulder.getCurrentPosition() + diff_ticks;
+        shoulder.setTargetPosition(target_ticks);
+    }
+
+
+
+    public int getAngleToTicks(int i) {
+        return Double.valueOf((double)i * 0.8).intValue();
+    }
 }
