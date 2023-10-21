@@ -5,7 +5,10 @@ import static java.lang.Math.atan;
 import static java.lang.Math.cos;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Arm {
 
@@ -18,22 +21,32 @@ public class Arm {
     private int elbow_pos;
     private int shoulder_angle = 0;
     private int elbow_angle = 0;
+    public int elbow_target_ticks = 0;
+    public int shoulder_target_ticks = 0;
     public Arm(HardwareMap map) {
         shoulder = map.get(DcMotor.class, "shoulder");
         elbow = map.get(DcMotor.class, "elbow");
 
-        elbow_pos = elbow.getCurrentPosition();
+//        elbow_pos = elbow.getCurrentPosition();
 
-        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shoulder_pos = shoulder.getCurrentPosition();
+//        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        shoulder_pos = shoulder.getCurrentPosition();
+//
+//        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        elbow_pos = shoulder.getCurrentPosition();
+//        elbow.setTargetPosition(elbow_pos);
+//        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        elbow.setPower(1);
+//
 
+//        shoulder.setTargetPosition(0);
+//        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        shoulder.setPower(1);
+        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        elbow.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shoulder.setTargetPosition(0);
-        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        shoulder.setPower(1);
-
+        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
@@ -104,16 +117,55 @@ public class Arm {
         return i * i;
     }
 
-    public void moveShoulderToAngle(int degrees){
-        int angle_diff = degrees - shoulder_angle;
-        int diff_ticks = getAngleToTicks(angle_diff);
-        int target_ticks = shoulder.getCurrentPosition() + diff_ticks;
-        shoulder.setTargetPosition(target_ticks);
+    public void moveShoulderByDegrees(int degrees){
+//        if (shoulder.isBusy()) return;
+        int diff_ticks = getAngleToTicks(degrees);
+        shoulder_target_ticks = shoulder.getCurrentPosition() + diff_ticks;
+        shoulder.setTargetPosition(shoulder_target_ticks);
+        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulder.setPower(1);
+        shoulder_angle = shoulder_angle + degrees;
+    }
+
+    public void moveElbowByDegrees(int degrees){
+//        if (elbow.isBusy()) return;
+
+        int diff_ticks = getAngleToTicks(degrees);
+        elbow_target_ticks = elbow.getCurrentPosition() + diff_ticks;
+        elbow.setTargetPosition(elbow_target_ticks);
+//        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        elbow.setPower(1);
+        elbow_angle = elbow_angle + degrees;
+
+    }
+    public void addTelementry(Telemetry telemetry) {
+        telemetry.addData("shoulder Running to ticks ",  " %7d", shoulder_target_ticks);
+
+        telemetry.addData("shoulder Running to degrees ",  " %7d", shoulder_angle);
+        telemetry.addData("shoulder Currently at",  " at %7d",
+                    shoulder.getCurrentPosition());
+        telemetry.addData("shoulder buys? ", shoulder.isBusy());
+        telemetry.addData("elbow Running to ticks",  " %7d", elbow_target_ticks);
+
+        telemetry.addData("elbow Running to degrees",  " %7d", elbow_angle);
+        telemetry.addData("elbow Currently at",  " at %7d",
+                elbow.getCurrentPosition());
+        telemetry.addData("Elbow buys? ", elbow.isBusy());
+
     }
 
 
 
     public int getAngleToTicks(int i) {
         return Double.valueOf((double)i * 0.8).intValue();
+    }
+
+    public void moveElbow(double power){
+
+        elbow.setPower(power);
+
+    }
+    public void moveShoulder(double power) {
+        shoulder.setPower(power);
     }
 }

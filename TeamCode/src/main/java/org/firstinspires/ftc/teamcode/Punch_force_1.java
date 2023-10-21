@@ -42,12 +42,21 @@ public class Punch_force_1 extends LinearOpMode {
                 servo.setPosition(50);
             }
 
-            if (gamepad1.x) {
-                arm.moveShoulderToAngle(45);
-            }
-            if (gamepad1.y) {
-                arm.moveShoulderToAngle(0);
-            }
+//            if (gamepad2.left_stick_x) {
+//                arm.moveElbowByDegrees(45);
+//            }
+//            if (gamepad1.a) {
+//                arm.moveElbowByDegrees(-45);
+//            }
+//            if (gamepad1.x) {
+//                arm.moveShoulderByDegrees(5);
+//            }
+//            if (gamepad1.b) {
+//                arm.moveShoulderByDegrees(-5);
+//            }
+
+            arm.moveShoulder(gamepad2.left_stick_y);
+            arm.moveElbow(gamepad2.right_stick_y);
 
 
 
@@ -56,6 +65,7 @@ public class Punch_force_1 extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+            arm.addTelementry(telemetry);
             telemetry.update();
         }
     }
