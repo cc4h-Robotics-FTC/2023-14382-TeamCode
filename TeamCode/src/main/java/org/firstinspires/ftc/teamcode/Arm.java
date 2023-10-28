@@ -4,6 +4,8 @@ import static java.lang.Math.acos;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
 
+import com.qualcomm.hardware.motors.RevRobotics20HdHexMotor;
+import com.qualcomm.hardware.motors.RevRobotics40HdHexMotor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Arm {
 
     private double PI = Math.PI;
-    private DcMotor shoulder;
+    private RevRobotics20HdHexMotor shoulder;
     private DcMotor elbow;
     private double lowerLength = 15.125;
     private double upperLength = 16;
@@ -24,7 +26,7 @@ public class Arm {
     public int elbow_target_ticks = 0;
     public int shoulder_target_ticks = 0;
     public Arm(HardwareMap map) {
-        shoulder = map.get(DcMotor.class, "shoulder");
+        shoulder = map.get(RevRobotics20HdHexMotor.class, "shoulder");
         elbow = map.get(DcMotor.class, "elbow");
 
 //        elbow_pos = elbow.getCurrentPosition();
