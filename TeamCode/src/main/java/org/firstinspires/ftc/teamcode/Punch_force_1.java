@@ -14,6 +14,7 @@ public class Punch_force_1 extends LinearOpMode {
 
     Servo servo;
     Arm arm;
+    boolean buttonNotPushed = true;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -42,9 +43,21 @@ public class Punch_force_1 extends LinearOpMode {
                 servo.setPosition(50);
             }
 
-//            if (gamepad2.left_stick_x) {
-//                arm.moveElbowByDegrees(45);
+            if (gamepad2.dpad_up && buttonNotPushed) {
+                arm.moveElbowByDegrees(90);
+                buttonNotPushed = false;
+            }
+            if (gamepad2.dpad_down && buttonNotPushed) {
+                arm.moveShoulderByDegrees(-90);
+                buttonNotPushed = false;
+            }
+//            if (gamepad2.dpad_up) {
+//                arm.moveElbowByDegrees(7);
 //            }
+//            if (gamepad2.dpad_down) {
+//                arm.moveElbowByDegrees(-7);
+//            }
+
 //            if (gamepad1.a) {
 //                arm.moveElbowByDegrees(-45);
 //            }
@@ -55,8 +68,8 @@ public class Punch_force_1 extends LinearOpMode {
 //                arm.moveShoulderByDegrees(-5);
 //            }
 
-            arm.moveShoulder(gamepad2.left_stick_y);
-            arm.moveElbow(gamepad2.right_stick_y);
+//            arm.moveShoulder(gamepad2.left_stick_y);
+//            arm.moveElbow(gamepad2.right_stick_y);
 
 
 

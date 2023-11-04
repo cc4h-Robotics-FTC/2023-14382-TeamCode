@@ -29,6 +29,20 @@ public class ArmTest {
         Assert.assertEquals( 288,x);
 
     }
+    @Test()
+    public void testElobwAngleToTicks() {
+
+        Arm a = new Arm(hardwareMap);
+        int x = a.getElbowAngleToTicks(90);
+        Assert.assertEquals( 187,x);
+
+        x = a.getElbowAngleToTicks(360);
+        Assert.assertEquals( 748,x);
+
+        x = a.getElbowAngleToTicks(1);
+        Assert.assertEquals( 2,x);
+    }
+
 
     @Test
     public void testMoveMotorToAngle() {

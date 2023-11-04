@@ -15,40 +15,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class Arm {
 
     private double PI = Math.PI;
-    private RevRobotics20HdHexMotor shoulder;
-    private DcMotor elbow;
+    private ArmJoint shoulder;
+    private ArmJoint elbow;
     private double lowerLength = 15.125;
     private double upperLength = 16;
-    private int shoulder_pos;
-    private int elbow_pos;
-    private int shoulder_angle = 0;
-    private int elbow_angle = 0;
-    public int elbow_target_ticks = 0;
-    public int shoulder_target_ticks = 0;
     public Arm(HardwareMap map) {
-        shoulder = map.get(RevRobotics20HdHexMotor.class, "shoulder");
-        elbow = map.get(DcMotor.class, "elbow");
 
-//        elbow_pos = elbow.getCurrentPosition();
-
-
-//        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        shoulder_pos = shoulder.getCurrentPosition();
-//
-//        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        elbow_pos = shoulder.getCurrentPosition();
-//        elbow.setTargetPosition(elbow_pos);
-//        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        elbow.setPower(1);
-//
-
-//        shoulder.setTargetPosition(0);
-//        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        shoulder.setPower(1);
-        shoulder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        elbow.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+       elbow = new ArmJoint(map, "elbow", 2.6, 288.0/360.0);
+       shoulder = new ArmJoint(map, "shoulder", 2.7,288.0/360.0 );
 
     }
 
@@ -101,16 +75,6 @@ public class Arm {
 
     }
 
-
-    public void powerShoulder(double p) {
-        shoulder.setPower(p);
-    }
-
-    public void powerElbow(double p) {
-        elbow.setPower(p);
-
-    }
-
     void moveToAngle(double a1, double a2) {
 
     }
@@ -120,54 +84,35 @@ public class Arm {
     }
 
     public void moveShoulderByDegrees(int degrees){
-//        if (shoulder.isBusy()) return;
-        int diff_ticks = getAngleToTicks(degrees);
-        shoulder_target_ticks = shoulder.getCurrentPosition() + diff_ticks;
-        shoulder.setTargetPosition(shoulder_target_ticks);
-        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        shoulder.setPower(1);
-        shoulder_angle = shoulder_angle + degrees;
+        shoulder.moveJointByDegrees(degrees);
+
     }
 
     public void moveElbowByDegrees(int degrees){
-//        if (elbow.isBusy()) return;
-
-        int diff_ticks = getAngleToTicks(degrees);
-        elbow_target_ticks = elbow.getCurrentPosition() + diff_ticks;
-        elbow.setTargetPosition(elbow_target_ticks);
-//        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        elbow.setPower(1);
-        elbow_angle = elbow_angle + degrees;
+        elbow.moveJointByDegrees(degrees);
 
     }
     public void addTelementry(Telemetry telemetry) {
-        telemetry.addData("shoulder Running to ticks ",  " %7d", shoulder_target_ticks);
+        telemetry.addData("shoulder Running to ticks ",  " %7d", shoulder.getJoint_target_ticks());
 
-        telemetry.addData("shoulder Running to degrees ",  " %7d", shoulder_angle);
+        telemetry.addData("shoulder Running to degrees ",  " %7d", shoulder.getJoint_angle());
         telemetry.addData("shoulder Currently at",  " at %7d",
                     shoulder.getCurrentPosition());
         telemetry.addData("shoulder buys? ", shoulder.isBusy());
-        telemetry.addData("elbow Running to ticks",  " %7d", elbow_target_ticks);
+        telemetry.addData("elbow Running to ticks",  " %7d", elbow.getJoint_target_ticks());
 
-        telemetry.addData("elbow Running to degrees",  " %7d", elbow_angle);
+        telemetry.addData("elbow Running to degrees",  " %7d", elbow.getJoint_angle());
         telemetry.addData("elbow Currently at",  " at %7d",
                 elbow.getCurrentPosition());
         telemetry.addData("Elbow buys? ", elbow.isBusy());
 
     }
 
-
-
     public int getAngleToTicks(int i) {
         return Double.valueOf((double)i * 0.8).intValue();
     }
 
-    public void moveElbow(double power){
+    public void moveShoulderToAngle(int i) {
 
-        elbow.setPower(power);
-
-    }
-    public void moveShoulder(double power) {
-        shoulder.setPower(power);
     }
 }
